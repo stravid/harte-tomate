@@ -1,76 +1,71 @@
 #include "PomodoroTimer.h"
 
 PomodoroTimer::PomodoroTimer() {
-  millisecondsOfLastUpdate = 0;
-  durationInMilliseconds = 0;
-  state = 0;
+  reset();
 }
 
-// 0 = not running
-// 1 = rest period started
-// 2 = rest period finished
-int PomodoroTimer::update() {
-  if (state == 0) {
-    return 0;
+PomodoroTimerEvent PomodoroTimer::update() {
+  if (state == IDLE) {
+    return NONE;
   }
 
   unsigned long now = millis();
-  
-//    Serial.println(state);
-//    Serial.println(now);
-//    Serial.println(millisecondsOfLastUpdate);
-//    Serial.println(durationInMilliseconds);
-
-  if (millisecondsOfLastUpdate > 0) {
-    durationInMilliseconds += now - millisecondsOfLastUpdate;
-  }
-  
+  durationInMilliseconds += now - millisecondsOfLastUpdate;
   millisecondsOfLastUpdate = now;
   
-  Serial.println(durationInMilliseconds / 1000);
+  if (state == WORK && durationInMilliseconds >= 25000) {
+    setupState(REST);
 
-  if (state == 1 && durationInMilliseconds >= 25000) {
-    state = 2;
-    millisecondsOfLastUpdate = 0;
-    durationInMilliseconds = 0;
-    Serial.println("Work period finished");
-    Serial.println("Rest period started");
-    return 1;
+    return REST_PERIOD_STARTED;
   }
 
-  if (state == 2 && durationInMilliseconds >= 15000) {
-//    Serial.println(now);
-//    Serial.println(state);
-//    Serial.println(millisecondsOfLastUpdate);
-//    Serial.println(durationInMilliseconds);
-    state = 0;
-    millisecondsOfLastUpdate = 0;
-    durationInMilliseconds = 0;
-    Serial.println("Rest period finished");
-    return 2;
+  if (state == REST && durationInMilliseconds >= 15000) {
+    reset();
+
+    return REST_PERIOD_ENDED;
   }
   
-  return 0;
+  return NONE;
 }
 
-void PomodoroTimer::buttonPressed() {
-	if (state == 0) {
-		state = 1;
-    millisecondsOfLastUpdate = millis();
-    durationInMilliseconds = 0;
-		Serial.println("Work period started");
+PomodoroTimerEvent PomodoroTimer::buttonPressed() {
+	if (state == IDLE) {
+    setupState(WORK);
+		
+    return WORK_PERIOD_STARTED;
 	} else {
-    state = 0;
-    millisecondsOfLastUpdate = 0;
-    durationInMilliseconds = 0;
-    Serial.println("Period aborted");
+    reset();
+
+    return PERIOD_ABORTED;
   }
+
+  return NONE;
 }
 
 int PomodoroTimer::fifth() {
-  if (state == 1) {
+  if (state == WORK) {
     return (int)(durationInMilliseconds / 5000);
-  } else if (state == 2) {
+  } else if (state == REST) {
     return (int)(durationInMilliseconds / 3000);
   }
+}
+
+void PomodoroTimer::resetState() {
+  state = IDLE;
+}
+
+void PomodoroTimer::resetTime() {
+  millisecondsOfLastUpdate = 0;
+  durationInMilliseconds = 0;
+}
+
+void PomodoroTimer::reset() {
+  resetTime();
+  resetState();
+}
+
+void PomodoroTimer::setupState(PomodoroTimerState s) {
+  state = s;
+  millisecondsOfLastUpdate = millis();
+  durationInMilliseconds = 0;
 }

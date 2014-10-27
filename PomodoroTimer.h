@@ -2,17 +2,23 @@
 #define POMODORO_TIMER_H
 
 #include <Arduino.h>
+#include "PomodoroTimerEvents.h"
+#include "PomodoroTimerStates.h"
 
 class PomodoroTimer {
 public:
   PomodoroTimer();
-  void buttonPressed();
-  int update();
+  PomodoroTimerEvent buttonPressed();
+  PomodoroTimerEvent update();
   int fifth();
-  int state;
-  unsigned long durationInMilliseconds;
+  PomodoroTimerState state;
 private:
+  unsigned long durationInMilliseconds;
   unsigned long millisecondsOfLastUpdate;
+  void reset();
+  void resetTime();
+  void resetState();
+  void setupState(PomodoroTimerState state);
 };
 
 #endif
