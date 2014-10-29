@@ -1,4 +1,3 @@
-#include "led.h"
 #include <Bridge.h>
 //#include <HttpClient.h>
 #include "SimpleTimer.h"
@@ -6,52 +5,12 @@
 #include "Button.h"
 #include "PomodoroTimerEvents.h"
 #include "PomodoroTimerStates.h"
-
-LED leds[5] = { LED(12, 11), LED(10, 9), LED(8, 7), LED(6, 5), LED(4, 3) };
+#include "LEDRenderer.h"
 
 PomodoroTimer pomodoroTimer;
 SimpleTimer timer;
 Button button(2);
-
-int pattern[5][5][4] = {
-  {
-    { 1, 0, 1, 0 },
-    { 0, 0, 0, 0 },
-    { 0, 0, 0, 0 },
-    { 0, 0, 0, 0 },
-    { 0, 0, 0, 0 }
-  },
-  {
-    { 1, 1, 1, 1 },
-    { 1, 0, 1, 0 },
-    { 0, 0, 0, 0 },
-    { 0, 0, 0, 0 },
-    { 0, 0, 0, 0 }
-  },
-  {
-    { 1, 1, 1, 1 },
-    { 1, 1, 1, 1 },
-    { 1, 0, 1, 0 },
-    { 0, 0, 0, 0 },
-    { 0, 0, 0, 0 }
-  },
-  {
-    { 1, 1, 1, 1 },
-    { 1, 1, 1, 1 },
-    { 1, 1, 1, 1 },
-    { 1, 0, 1, 0 },
-    { 0, 0, 0, 0 }
-  },
-  {
-    { 1, 1, 1, 1 },
-    { 1, 1, 1, 1 },
-    { 1, 1, 1, 1 },
-    { 1, 1, 1, 1 },
-    { 1, 0, 1, 0 }
-  }
-};
-
-int displayCycle = 0;
+LEDRenderer renderer;
 
 void tick() {
   updatePomodoroTimer();
@@ -63,12 +22,12 @@ void updatePomodoroTimer() {
   
   if (event == REST_PERIOD_STARTED) {
     Serial.println("Rest period started. (Play sound)");
-    displayCycle = 0;
+    renderer.reset();
   }
   
   if (event == REST_PERIOD_ENDED) {
     Serial.println("Rest period ended. (Play sound and make API request)");
-    displayCycle = 0;
+    renderer.reset();
   }
 }
 
@@ -77,28 +36,7 @@ void updateDisplay() {
     return;
   }
   
-  int result[5];
-
-  for (int i = 0; i < 5; i++) {
-    int patternValue = pattern[pomodoroTimer.fifth()][i][displayCycle];
-
-    if (patternValue == 1) {
-      if (pomodoroTimer.state == WORK) {
-        patternValue = 1;
-      } else {
-        patternValue = 2;
-      }
-    }
-
-    result[i] = patternValue;
-  }
-
-  displayPattern(result);
-  displayCycle++;
-
-  if (displayCycle == 4) {
-    displayCycle = 0;
-  }
+  renderer.update(pomodoroTimer);
 }
 
 void setup() {                
@@ -121,22 +59,6 @@ void loop() {
 
     if (event == PERIOD_ABORTED) {
       Serial.println("Period aborted. (Make API request)");
-    }
-  }
-}
-
-void displayPattern(int pattern[]) {  
-  for (int i = 0; i < 5; i++) {
-    if (pattern[i] == 0) {
-      leds[i].off();
-    }
-    
-    if (pattern[i] == 1) {
-      leds[i].green();
-    }
-    
-    if (pattern[i] == 2) {
-      leds[i].red();
     }
   }
 }
