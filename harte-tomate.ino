@@ -54,6 +54,11 @@ int pattern[5][5][4] = {
 int displayCycle = 0;
 
 void tick() {
+  updatePomodoroTimer();
+  updateDisplay();
+}
+
+void updatePomodoroTimer() {
   int event = pomodoroTimer.update();
   
   if (event == REST_PERIOD_STARTED) {
@@ -101,8 +106,7 @@ void setup() {
   Serial.begin(9600);
   while(!Serial);
   
-  timer.setInterval(1000, tick);
-  timer.setInterval(250, updateDisplay);
+  timer.setInterval(250, tick);
 }
 
 void loop() {
