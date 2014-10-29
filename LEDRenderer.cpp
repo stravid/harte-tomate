@@ -24,17 +24,11 @@ void LEDRenderer::update(PomodoroTimer pomodoroTimer) {
   int result[5];
 
   for (int i = 0; i < 5; i++) {
-    int patternValue = workPattern[pomodoroTimer.fifth()][i][displayCycle];
-
-    if (patternValue == 1) {
-      if (pomodoroTimer.state == WORK) {
-        patternValue = 1;
-      } else {
-        patternValue = 2;
-      }
+    if (pomodoroTimer.state == WORK) {
+      result[i] = workPattern[pomodoroTimer.fifth()][i][displayCycle];
+    } else {
+      result[i] = restPattern[pomodoroTimer.fifth()][i][displayCycle];
     }
-
-    result[i] = patternValue;
   }
 
   displayPattern(result);
