@@ -18,17 +18,7 @@ void tick() {
 }
 
 void updatePomodoroTimer() {
-  int event = pomodoroTimer.update();
-  
-  if (event == REST_PERIOD_STARTED) {
-    Serial.println("Rest period started. (Play sound)");
-    renderer.reset();
-  }
-  
-  if (event == REST_PERIOD_ENDED) {
-    Serial.println("Rest period ended. (Play sound and make API request)");
-    renderer.reset();
-  }
+  handleEvent(pomodoroTimer.update());
 }
 
 void updateDisplay() {
@@ -51,14 +41,25 @@ void loop() {
   timer.run();
 
   if (button.pressed()) {
-    PomodoroTimerEvent event = pomodoroTimer.buttonPressed();
+    handleEvent(pomodoroTimer.buttonPressed());
+  }
+}
 
-    if (event == WORK_PERIOD_STARTED) {
+void handleEvent(PomodoroTimerEvent event) {
+  switch (event) {
+    case WORK_PERIOD_STARTED:
       Serial.println("Work started. (Make API request)");
-    }
-
-    if (event == PERIOD_ABORTED) {
+      break;
+    case PERIOD_ABORTED:
       Serial.println("Period aborted. (Make API request)");
-    }
+      break;
+    case REST_PERIOD_STARTED:
+      Serial.println("Rest period started. (Play sound)");
+      renderer.reset();
+      break;
+    case REST_PERIOD_ENDED:
+      Serial.println("Rest period ended. (Play sound and make API request)");
+      renderer.reset();
+      break;
   }
 }
