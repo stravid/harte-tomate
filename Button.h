@@ -11,7 +11,9 @@ class Button {
   private:
     bool previousIsPressed;
     bool isLongEnoughPressed();
+    bool isLocked();
     unsigned long firstPressedAt;
+    unsigned long lockedAt;
     int pin;
 };
 #endif
