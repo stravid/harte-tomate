@@ -1,5 +1,5 @@
 #include <Bridge.h>
-//#include <HttpClient.h>
+#include <HttpClient.h>
 #include "SimpleTimer.h"
 #include "PomodoroTimer.h"
 #include "Button.h"
@@ -11,6 +11,8 @@ PomodoroTimer pomodoroTimer;
 SimpleTimer timer;
 Button button(2);
 LEDRenderer renderer;
+String id;
+HttpClient client;
 
 void tick() {
   updatePomodoroTimer();
@@ -49,9 +51,11 @@ void handleEvent(PomodoroTimerEvent event) {
   switch (event) {
     case WORK_PERIOD_STARTED:
       Serial.println("Work started. (Make API request)");
+      reportStartOfPomodoro();
       break;
     case PERIOD_ABORTED:
       Serial.println("Period aborted. (Make API request)");
+      reportAbortOfPomodoro();
       break;
     case REST_PERIOD_STARTED:
       Serial.println("Rest period started. (Play sound)");
@@ -59,7 +63,34 @@ void handleEvent(PomodoroTimerEvent event) {
       break;
     case REST_PERIOD_ENDED:
       Serial.println("Rest period ended. (Play sound and make API request)");
+      reportEndOfPomodoro();
       renderer.reset();
       break;
   }
+}
+
+void reportStartOfPomodoro() {
+  String response = "";
+  int start, end;
+  
+  client.post("http://192.168.0.11:4567", "");
+
+  while (client.available()) {
+    char character = client.read();
+    response += character;
+  }
+
+  start = response.indexOf("id");
+  end = response.indexOf("}", start);
+  id = response.substring(start + 4, end);
+}
+
+void reportEndOfPomodoro() {
+  String url = "http://192.168.0.11:4567/" + id;
+  client.post(url.c_str(), "{\"event\":\"ended\"}");
+}
+
+void reportAbortOfPomodoro() {
+  String url = "http://192.168.0.11:4567/" + id;
+  client.post(url.c_str(), "{\"event\":\"aborted\"}");
 }
