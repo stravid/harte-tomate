@@ -8,12 +8,15 @@ Button::Button(int p) {
 }
 
 bool Button::pressed() {
+  
   if (isLocked()) {
     return false;
   }
   
-  bool isPressed = !(digitalRead(pin) == LOW);
+  bool isPressed = (digitalRead(pin) == HIGH);
   bool countsAsButtonPress = false;
+  
+//  Serial.println(isPressed);
   
   if (isPressed && !previousIsPressed) {
     firstPressedAt = millis();
