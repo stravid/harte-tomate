@@ -44,6 +44,8 @@ void updateDisplay() {
 void setup() {
   Bridge.begin();
   Serial.begin(9600);
+  
+  playSound();
 
   timer.setInterval(250, tick);
 }

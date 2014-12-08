@@ -11,7 +11,7 @@ class LEDRenderer {
     // bool pressed();
 
   private:
-    LED leds[5] = { LED(12, 11), LED(10, 9), LED(8, 7), LED(6, 5), LED(4, 3) };
+    LED leds[5] = { LED(13, 12), LED(11, 10), LED(9, 8), LED(7, 6), LED(5, 4) };
 
     int workPattern[5][5][4] = {
 	  {
