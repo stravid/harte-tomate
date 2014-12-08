@@ -4,16 +4,16 @@ void LEDRenderer::reset() {
   displayCycle = 0;
 }
 
-void LEDRenderer::displayPattern(int pattern[]) {  
+void LEDRenderer::displayPattern(int pattern[]) {
   for (int i = 0; i < 5; i++) {
     if (pattern[i] == 0) {
       leds[i].off();
     }
-    
+
     if (pattern[i] == 1) {
       leds[i].green();
     }
-    
+
     if (pattern[i] == 2) {
       leds[i].red();
     }

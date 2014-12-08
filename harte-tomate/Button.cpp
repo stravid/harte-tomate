@@ -14,8 +14,6 @@ bool Button::pressed() {
 
   bool isPressed = (digitalRead(pin) == HIGH);
   bool countsAsButtonPress = false;
-  
-//  Serial.print(isPressed);
 
   if (isPressed && !previousIsPressed) {
     firstPressedAt = millis();

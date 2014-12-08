@@ -44,8 +44,6 @@ void updateDisplay() {
 void setup() {
   Bridge.begin();
   Serial.begin(9600);
-  
-  playSound();
 
   timer.setInterval(250, tick);
 }
@@ -54,7 +52,6 @@ void loop() {
   timer.run();
 
   if (button.pressed()) {
-    playSound();
     handleEvent(pomodoroTimer.buttonPressed());
   }
 }
@@ -62,22 +59,22 @@ void loop() {
 void handleEvent(PomodoroTimerEvent event) {
   switch (event) {
     case WORK_PERIOD_STARTED:
-      Serial.println("Work started. (Make API request)");
       reportStartOfPomodoro();
       break;
-    case PERIOD_ABORTED:
-      Serial.println("Period aborted. (Make API request)");
-      reportAbortOfPomodoro();
-      break;
-    case REST_PERIOD_STARTED:
-      Serial.println("Rest period started. (Play sound)");
+    case WORK_PERIOD_ENDED:
+      reportEndOfPomodoro();
       playSound();
       renderer.reset();
       break;
+    case WORK_PERIOD_ABORTED:
+      reportAbortOfPomodoro();
+      renderer.reset();
+      break;
     case REST_PERIOD_ENDED:
-      Serial.println("Rest period ended. (Play sound and make API request)");
-      reportEndOfPomodoro();
       playSound();
+      renderer.reset();
+      break;
+    case REST_PERIOD_ABORTED:
       renderer.reset();
       break;
   }

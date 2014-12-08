@@ -12,11 +12,11 @@ PomodoroTimerEvent PomodoroTimer::update() {
   unsigned long now = millis();
   durationInMilliseconds += now - millisecondsOfLastUpdate;
   millisecondsOfLastUpdate = now;
-  
+
   if (state == WORK && durationInMilliseconds >= 25000) {
     setupState(REST);
 
-    return REST_PERIOD_STARTED;
+    return WORK_PERIOD_ENDED;
   }
 
   if (state == REST && durationInMilliseconds >= 15000) {
@@ -24,19 +24,23 @@ PomodoroTimerEvent PomodoroTimer::update() {
 
     return REST_PERIOD_ENDED;
   }
-  
+
   return NONE;
 }
 
 PomodoroTimerEvent PomodoroTimer::buttonPressed() {
 	if (state == IDLE) {
     setupState(WORK);
-		
+
     return WORK_PERIOD_STARTED;
-	} else {
+	} else if (state == WORK) {
     reset();
 
-    return PERIOD_ABORTED;
+    return WORK_PERIOD_ABORTED;
+  } else {
+    reset();
+
+    return REST_PERIOD_ABORTED;
   }
 
   return NONE;
