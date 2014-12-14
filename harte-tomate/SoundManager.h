@@ -1,3 +1,6 @@
+#ifndef SOUND_MANAGER_H
+#define SOUND_MANAGER_H
+
 #define NOTE_B0  31
 #define NOTE_C1  33
 #define NOTE_CS1 35
@@ -87,5 +90,17 @@
 #define NOTE_CS8 4435
 #define NOTE_D8  4699
 #define NOTE_DS8 4978
+
+class SoundManager {
+  public:
+    void playWorkPeriodStopped();
+    void playRestPeriodStopped();
+    SoundManager(int pin);
+  private:
+    int pin;
+    int melody[8] = { NOTE_C4, NOTE_G3, NOTE_G3, NOTE_A3, NOTE_G3, 0, NOTE_B3, NOTE_C4 };
+    int noteDurations[8] = { 4, 8, 8, 4, 4, 4, 4, 4 };
+};
+#endif
 
 

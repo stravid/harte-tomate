@@ -6,15 +6,8 @@
 #include "PomodoroTimerEvents.h"
 #include "PomodoroTimerStates.h"
 #include "LEDRenderer.h"
-#include "pitches.h"
-
-int melody[] = {
-  NOTE_C4, NOTE_G3, NOTE_G3, NOTE_A3, NOTE_G3, 0, NOTE_B3, NOTE_C4
-};
-
-int noteDurations[] = {
-  4, 8, 8, 4, 4, 4, 4, 4
-};
+#include "SoundManager.h"
+#include "Environment.h"
 
 PomodoroTimer pomodoroTimer;
 SimpleTimer timer;
@@ -22,7 +15,7 @@ Button button(3);
 LEDRenderer renderer;
 String id;
 HttpClient client;
-int speakerPin = 2;
+SoundManager soundManager(2);
 
 void tick() {
   updatePomodoroTimer();
@@ -63,7 +56,7 @@ void handleEvent(PomodoroTimerEvent event) {
       break;
     case WORK_PERIOD_ENDED:
       reportEndOfPomodoro();
-      playSound();
+      soundManager.playWorkPeriodStopped();
       renderer.reset();
       break;
     case WORK_PERIOD_ABORTED:
@@ -71,7 +64,7 @@ void handleEvent(PomodoroTimerEvent event) {
       renderer.reset();
       break;
     case REST_PERIOD_ENDED:
-      playSound();
+      soundManager.playRestPeriodStopped();
       renderer.reset();
       break;
     case REST_PERIOD_ABORTED:
@@ -81,7 +74,7 @@ void handleEvent(PomodoroTimerEvent event) {
 }
 
 void reportStartOfPomodoro() {
-  client.post("http://stravid.com/harte-tomate/pomodori", "token2=h1RYmXbH56GsWKPB");
+  client.post("http://stravid.com/harte-tomate/pomodori", (char*)String("token2=").concat(TOKEN));
 
   String response = "";
   int start, end;
@@ -98,7 +91,8 @@ void reportStartOfPomodoro() {
 
 void reportEndOfPomodoro() {
   String url = "http://stravid.com/harte-tomate/pomodori/" + id;
-  client.post(url.c_str(), "token2=h1RYmXbH56GsWKPB&event=ended");
+//  client.post(url.c_str(), "token2=h1RYmXbH56GsWKPB&event=ended");
+  client.post(url.c_str(), (char*)String(String("token2=").concat(TOKEN)).concat("&event=ended"));
 
   while (client.available()) {
     client.read();
@@ -107,26 +101,10 @@ void reportEndOfPomodoro() {
 
 void reportAbortOfPomodoro() {
   String url = "http://stravid.com/harte-tomate/pomodori/" + id;
-  client.post(url.c_str(), "token2=h1RYmXbH56GsWKPB&event=aborted");
+//  client.post(url.c_str(), "token2=h1RYmXbH56GsWKPB&event=aborted");
+  client.post(url.c_str(), (char*)String(String("token2=").concat(TOKEN)).concat("&event=aborted"));
 
   while (client.available()) {
     client.read();
-  }
-}
-
-void playSound() {
-  for (int thisNote = 0; thisNote < 8; thisNote++) {
-    // to calculate the note duration, take one second
-    // divided by the note type.
-    //e.g. quarter note = 1000 / 4, eighth note = 1000 / 8, etc.
-    int noteDuration = 1000 / noteDurations[thisNote];
-    tone(speakerPin, melody[thisNote], noteDuration);
-
-    // to distinguish the notes, set a minimum time between them.
-    // the note's duration + 30% seems to work well:
-    int pauseBetweenNotes = noteDuration * 1.30;
-    delay(pauseBetweenNotes);
-    // stop the tone playing:
-    noTone(speakerPin);
   }
 }
