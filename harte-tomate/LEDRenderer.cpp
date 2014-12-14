@@ -2,6 +2,18 @@
 
 void LEDRenderer::reset() {
   displayCycle = 0;
+  int pattern[5] = { 0, 0, 0, 0, 0 };
+  displayPattern(pattern);
+}
+
+void LEDRenderer::allGreen() {
+  int pattern[5] = { 1, 1, 1, 1, 1 };
+  displayPattern(pattern);
+}
+
+void LEDRenderer::allRed() {
+  int pattern[5] = { 2, 2, 2, 2, 2 };
+  displayPattern(pattern);
 }
 
 void LEDRenderer::displayPattern(int pattern[]) {

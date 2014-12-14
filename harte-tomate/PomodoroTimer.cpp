@@ -73,3 +73,7 @@ void PomodoroTimer::setupState(PomodoroTimerState s) {
   millisecondsOfLastUpdate = millis();
   durationInMilliseconds = 0;
 }
+
+void PomodoroTimer::setupRestPeriod() {
+  setupState(REST);
+}

@@ -8,6 +8,8 @@ class LEDRenderer {
   public:
     void update(PomodoroTimer pt);
     void reset();
+    void allGreen();
+    void allRed();
 
   private:
     LED leds[5] = { LED(13, 12), LED(11, 10), LED(9, 8), LED(7, 6), LED(5, 4) };

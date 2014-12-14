@@ -55,9 +55,12 @@ void handleEvent(PomodoroTimerEvent event) {
       reportStartOfPomodoro();
       break;
     case WORK_PERIOD_ENDED:
+      renderer.allGreen();
       reportEndOfPomodoro();
       soundManager.playWorkPeriodStopped();
       renderer.reset();
+      renderer.allRed();
+      pomodoroTimer.setupRestPeriod();
       break;
     case WORK_PERIOD_ABORTED:
       reportAbortOfPomodoro();

@@ -12,12 +12,13 @@ public:
   PomodoroTimerEvent update();
   int fifth();
   PomodoroTimerState state;
+  void setupRestPeriod();
 private:
   unsigned long durationInMilliseconds;
   unsigned long millisecondsOfLastUpdate;
   void reset();
-  void resetTime();
   void resetState();
+  void resetTime();
   void setupState(PomodoroTimerState state);
 };
 
