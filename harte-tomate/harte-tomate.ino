@@ -113,6 +113,7 @@ void reportAbortOfPomodoro() {
   String data = "token=";
   data.concat(TOKEN);
   data.concat("&event=aborted");
+  
   client.post(url.c_str(), data.c_str());
 
   while (client.available()) {

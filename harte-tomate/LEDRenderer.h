@@ -1,7 +1,7 @@
 #ifndef LED_RENDERER_H
 #define LED_RENDERER_H
 
-#include "led.h"
+#include "LED.h"
 #include "PomodoroTimer.h"
 
 class LEDRenderer {

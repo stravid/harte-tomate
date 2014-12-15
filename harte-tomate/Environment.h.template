@@ -1,1 +1,6 @@
+#ifndef ENVIRONMENT_H
+#define ENVIRONMENT_H
+
 #define TOKEN "1234"
+
+#endif
