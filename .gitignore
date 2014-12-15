@@ -1,1 +1,3 @@
 Environment.h
+*.sqlite3
+environment.php
