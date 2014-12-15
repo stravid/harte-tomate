@@ -77,7 +77,10 @@ void handleEvent(PomodoroTimerEvent event) {
 }
 
 void reportStartOfPomodoro() {
-  client.post("http://stravid.com/harte-tomate/pomodori", (char*)String("token=").concat(TOKEN));
+  String data = "token=";
+  data.concat(TOKEN);
+
+  client.post("http://stravid.com/harte-tomate/pomodori", data.c_str());
 
   String response = "";
   int start, end;
@@ -94,7 +97,11 @@ void reportStartOfPomodoro() {
 
 void reportEndOfPomodoro() {
   String url = "http://stravid.com/harte-tomate/pomodori/" + id;
-  client.post(url.c_str(), (char*)String(String("token=").concat(TOKEN)).concat("&event=ended"));
+  String data = "token=";
+  data.concat(TOKEN);
+  data.concat("&event=ended");
+  
+  client.post(url.c_str(), data.c_str());
 
   while (client.available()) {
     client.read();
@@ -103,7 +110,10 @@ void reportEndOfPomodoro() {
 
 void reportAbortOfPomodoro() {
   String url = "http://stravid.com/harte-tomate/pomodori/" + id;
-  client.post(url.c_str(), (char*)String(String("token=").concat(TOKEN)).concat("&event=aborted"));
+  String data = "token=";
+  data.concat(TOKEN);
+  data.concat("&event=aborted");
+  client.post(url.c_str(), data.c_str());
 
   while (client.available()) {
     client.read();
