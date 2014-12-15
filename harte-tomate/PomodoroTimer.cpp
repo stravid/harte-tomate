@@ -13,13 +13,13 @@ PomodoroTimerEvent PomodoroTimer::update() {
   durationInMilliseconds += now - millisecondsOfLastUpdate;
   millisecondsOfLastUpdate = now;
 
-  if (state == WORK && durationInMilliseconds >= 25000) {
+  if (state == WORK && durationInMilliseconds >= 1500000) {
     setupState(REST);
 
     return WORK_PERIOD_ENDED;
   }
 
-  if (state == REST && durationInMilliseconds >= 15000) {
+  if (state == REST && durationInMilliseconds >= 300000) {
     reset();
 
     return REST_PERIOD_ENDED;
@@ -48,9 +48,9 @@ PomodoroTimerEvent PomodoroTimer::buttonPressed() {
 
 int PomodoroTimer::fifth() {
   if (state == WORK) {
-    return (int)(durationInMilliseconds / 5000);
+    return (int)(durationInMilliseconds / 300000);
   } else if (state == REST) {
-    return (int)(durationInMilliseconds / 3000);
+    return (int)(durationInMilliseconds / 60000);
   }
 }
 
