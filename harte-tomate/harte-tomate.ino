@@ -67,8 +67,8 @@ void handleEvent(PomodoroTimerEvent event) {
       renderer.reset();
       break;
     case REST_PERIOD_ENDED:
-      soundManager.playRestPeriodStopped();
       renderer.reset();
+      soundManager.playRestPeriodStopped();
       break;
     case REST_PERIOD_ABORTED:
       renderer.reset();
@@ -77,7 +77,7 @@ void handleEvent(PomodoroTimerEvent event) {
 }
 
 void reportStartOfPomodoro() {
-  client.post("http://stravid.com/harte-tomate/pomodori", (char*)String("token2=").concat(TOKEN));
+  client.post("http://stravid.com/harte-tomate/pomodori", (char*)String("token=").concat(TOKEN));
 
   String response = "";
   int start, end;
@@ -94,8 +94,7 @@ void reportStartOfPomodoro() {
 
 void reportEndOfPomodoro() {
   String url = "http://stravid.com/harte-tomate/pomodori/" + id;
-//  client.post(url.c_str(), "token2=h1RYmXbH56GsWKPB&event=ended");
-  client.post(url.c_str(), (char*)String(String("token2=").concat(TOKEN)).concat("&event=ended"));
+  client.post(url.c_str(), (char*)String(String("token=").concat(TOKEN)).concat("&event=ended"));
 
   while (client.available()) {
     client.read();
@@ -104,8 +103,7 @@ void reportEndOfPomodoro() {
 
 void reportAbortOfPomodoro() {
   String url = "http://stravid.com/harte-tomate/pomodori/" + id;
-//  client.post(url.c_str(), "token2=h1RYmXbH56GsWKPB&event=aborted");
-  client.post(url.c_str(), (char*)String(String("token2=").concat(TOKEN)).concat("&event=aborted"));
+  client.post(url.c_str(), (char*)String(String("token=").concat(TOKEN)).concat("&event=aborted"));
 
   while (client.available()) {
     client.read();
