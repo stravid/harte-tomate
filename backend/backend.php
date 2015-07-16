@@ -15,6 +15,10 @@
     require_once('index.php');
   });
 
+  $router->map('GET', '/json', function() {
+    require_once('json.php');
+  });
+
   $router->map('POST', '/pomodori', function() {
     require_once('create.php');
   });
